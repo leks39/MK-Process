@@ -1,0 +1,48 @@
+Started working on the ML side of analytics about 5 weeks ago, and I thought it wise to summarize my process for reproducibility. After sourcing the dataset, I take these 10 steps.
+
+1. Install relevant libraries and load the dataset
+Load Libraries
+Python code: import --- as --- OR from --- import --- (if only part of the library is needed)
+R code: library (---)
+Load dataset into IDE or notebook (for csv files)
+Python code: df = pd.read_csv("file path on computer")
+R code: df<- read_csv("filename.csv")
+
+2. Get a quick overview of the dataset to understand it structure Python code: df.head(), df.shape
+R code: head(df), view(df)
+
+3. Check for null values and decide on how to address missingness (impute or remove)
+Python code: df.isnull().sum()
+R code: sapply(df, function(x) sum(is.na(x)))
+
+4. Ascertain if columns are labeled as the correct data type i.e. numerical and categorical. Then pick a method to convert categorical variables to dummy variables.
+Python code: df.dtypes , pd.get_dummies(df, columns = ['col'])
+R code: str(df), df <- dummy_cols(df, select_columns ="col")
+
+5. Confirm distribution of dataset to spot imbalances, especially in target variable and key features
+Python code: df.column.value_counts()
+R code: table(df$column)
+
+6. Select the most relevant features for the model to avoid the curse
+of dimensionality and overfitting. My feature selection process involves ranking the order of importance and than using a correlation matrix to drop one of the highly correlated features
+
+7. Split dataset first into target and features (X and y) then into
+training data and test data. My default split is 80% training which teaches the model patterns in the dataset and 20% test data which is used to evaluate model performance.
+Python code - X = df.drop(columns = ['target'], axis = 1) y = df['target']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = y, random_state = 42)
+
+R code - TrainingIndex<-createDataPartition(df$target, p=0.8, list=FALSE)
+TrainingSet <- df[TrainingIndex,]
+TestSet <- df[-TrainingIndex,]
+ 
+8. Scale features using standardization or normalization methods
+to ensure they fall within the same range so no feature has an undue advantage of high influence. I prefer to standardize.
+Equation: X = ((X - X.mean) / X.std)
+
+9. Implement the most suitable ML models then pick one that consistently returns the best accuracy score
+Python package: scikit-learn
+R package: caret
+
+10. Run predictive trials using 20% test data from step 7 to evaluate the performance of the model. Then finally deploy if all goes well
+
+This template will be tweaked as I gain more knowledge. Like every other thing in life, you get better with PRACTICE. #machinelearning #python #R #analytics #datascience
